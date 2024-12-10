@@ -1,61 +1,42 @@
 #!/usr/bin/python3
-"""Prime Game
-"""
-
-
-def is_prime(num):
-    """
-    Check if a number is prime.
-
-    Args:
-        num (int): The number to check.
-
-    Returns:
-        bool: True if the number is prime, False otherwise.
-    """
-    if num < 2:
-        return False
-    for i in range(2, int(num ** 0.5) + 1):
-        if num % i == 0:
-            return False
-    return True
+"""0. Prime Game - Maria and Ben are playing a game"""
 
 
 def isWinner(x, nums):
-    """Determine the winner of each round in the prime game.
-
-    Args:
-        x (int): The number of rounds.
-        nums (list): A list of integers representing the ranges for each round.
-
-    Returns:
-        str or None: The name of the player that won the most rounds.
-        If the winner cannot be determined, returns None.
+    """x - rounds
+    nums - numbers list
     """
-    # Function to find the next prime number in the set
-    def find_next_prime(current, nums):
-        for i in range(current + 1, len(nums)):
-            if is_prime(nums[i]):
-                return nums[i]
-        return -1
-
-    # Main game logic
-    winners = {'Maria': 0, 'Ben': 0}
-
-    for n in nums:
-        # Counting the number of primes in the given range
-        primes_count = sum(1 for num in range(1, n + 1) if is_prime(num))
-
-        # If the number of primes is even, Ben wins. Otherwise, Maria wins.
-        if primes_count % 2 == 0:
-            winners['Ben'] += 1
-        else:
-            winners['Maria'] += 1
-
-    # Determining the winner with the most wins
-    if winners['Maria'] == winners['Ben']:
+    if x <= 0 or nums is None:
         return None
-    elif winners['Maria'] > winners['Ben']:
-        return 'Maria'
-    else:
-        return 'Ben'
+    if x != len(nums):
+        return None
+
+    ben = 0
+    maria = 0
+
+    a = [1 for x in range(sorted(nums)[-1] + 1)]
+    a[0], a[1] = 0, 0
+    for i in range(2, len(a)):
+        rm_multiples(a, i)
+
+    for i in nums:
+        if sum(a[0:i + 1]) % 2 == 0:
+            ben += 1
+        else:
+            maria += 1
+    if ben > maria:
+        return "Ben"
+    if maria > ben:
+        return "Maria"
+    return None
+
+
+def rm_multiples(ls, x):
+    """removes multiple
+    of primes
+    """
+    for i in range(2, len(ls)):
+        try:
+            ls[i * x] = 0
+        except (ValueError, IndexError):
+            break
